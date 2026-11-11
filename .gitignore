@@ -1,0 +1,17 @@
+.idea
+.vscode
+
+.env
+venv/
+
+__pycache__/
+*.pyc
+*.pyo
+
+
+backend/staticfiles/
+backend/.env
+
+# materials/
+
+frontend/.vite/
