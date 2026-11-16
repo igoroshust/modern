@@ -1,10 +1,25 @@
 from django.shortcuts import render, redirect, get_object_or_404
+from django.views.decorators.http import require_http_methods
 from django.http import HttpResponse
 
 from .models import Note
 from .forms import NoteForm
 
-# Форма создания записи
+
+
+# Удаление
+@require_http_methods(["GET", "POST"])  # защита: разрешён только GET, POST
+def note_delete(request, note_id):
+    note = get_object_or_404(Note, pk=note_id)
+
+    if request.method == 'POST':
+        note.delete()
+        return redirect('notes_list')
+    
+    return render(request, 'notes/confirm_delete.html', {'note': note})
+
+
+# Создание записи
 def note_create(request):
     if request.method == 'POST':
         form = NoteForm(request.POST)
@@ -15,7 +30,7 @@ def note_create(request):
         form = NoteForm()
     return render(request, 'notes/form.html', {'form': form, 'title': 'Создать заметку'})
 
-
+# Редактирование записи
 def note_edit(request, note_id):
     note = get_object_or_404(Note, pk=note_id)
     if request.method == 'POST':
@@ -29,7 +44,6 @@ def note_edit(request, note_id):
         form = NoteForm(instance=note)
     return render(request, 'notes/form.html', {'form': form, 'title': 'Редактирование записи'})
         
-
 
 # Список всех заметок
 def notes_list(request):
