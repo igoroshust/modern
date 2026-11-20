@@ -22,6 +22,35 @@ class Person(models.Model):
     return reverse('person-detail', kwargs={'pk': self.pk})  # path('person/<int:pk>/', views.person, name='person-detail')
 ```
 
+Пример:
+
+urls
+
+```Python
+urlpatterns = [
+  path('articles/<slug:slug>/', views.ArticleDetail.as_view(), name='article_detail')
+]
+```
+
+models
+
+```Python
+from django.urls import reverse
+
+class Article(models.Model):
+  title = models.CharField(max_length=200)
+  slug = models.SlugField(unique=True)
+
+  def get_absolute_url(self):
+    return reverse('article_detail', kwargs={'slug': self.slug})
+```
+
+template
+
+```Python
+<a href="{{ article.get_absolute_url }}">{{ article.title }}</a>d 
+```
+
 ### clean()
 
 Кастомная валидация объекта. Метод clean() позволяет реализовать собственные правила валидации на уровне модели. Это особенно полезно, когда нужно проверить взаимосвязь нескольких полей или применить логику, которую нельзя описать в параметрах самих полей. clean() вызывается вручную, но автоматически запускается внутри full_clean() и в админке при сохранении объектов
@@ -75,7 +104,6 @@ class File(models.Model):
     self.file.delete(save=False)  # удаляем физический файл
     super().delete(*args, **kwargs)
 ```
-
 
 Django - высокоуровневый веб-фреймворк на языке Python, предназначенный для быстрого создания надёжных и масштабируемых веб-приложений. Он помогает разработчикам создавать сайты и веб-сервисы без необходимости писать всё с нуля.
 
@@ -145,13 +173,13 @@ ModelForm - специальный класс Django, который автом�
     class Meta:
         # Кастомизация названия таблицы в базе
         db_table = 'custom_table_name'
-    
+  
         # Указать приложение, к которому относится модель
         app_label = 'users'
-    
+  
         # Параметр получения последней записи (для .latest() и .earliest())
         get_latest_by = 'created_at'
-    
+  
         # Ограничение (на добавление людей с одинаковым именем и фамилией)
         constraints = [
             models.UniqueConstraint(
@@ -159,21 +187,21 @@ ModelForm - специальный класс Django, который автом�
                 name='unique_full_name'
             ),
         ]  # аналог unique_together, который не используется после 4.2 версии Django
-    
+  
         # Ускорение выборки по определённм полям
         indexes = [
             models.Index(fields=['last_name']),
         ]
-    
+  
         # Дополнительные права для объектов модели
         permissions = [
             ("can_moderate", "Может модерировать записи"),
         ]
-    
+  
         # Абстрактная модель не создаёт свою таблицу в БД, но может быть унаследована другими моделями
         # (можно вынести create_at и updated_at в базовую абстрактную модель)
         abstract = True
-    
+  
         # Не создаёт новую таблицу, использует таблицу-родителя.
         # Необходимо для изменения поведения модели (сортировка или добавление методов без мутирования оригинала)
         proxy = True
