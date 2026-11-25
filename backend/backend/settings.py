@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     
     'notes',
     'onetomany',
+    'manytomany',
 ]
 
 MIDDLEWARE = [

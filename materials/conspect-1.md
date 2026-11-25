@@ -48,7 +48,7 @@ class Article(models.Model):
 template
 
 ```Python
-<a href="{{ article.get_absolute_url }}">{{ article.title }}</a>d 
+<a href="{{ article.get_absolute_url }}">{{ article.title }}</a>d
 ```
 
 ### clean()
